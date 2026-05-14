@@ -23,26 +23,20 @@ const navDots  = document.querySelectorAll('.nav-dot');
 // ===== LOADING =====
 window.addEventListener('load', function () {
   var audio = document.getElementById('bgm');
+  var ls = document.getElementById('loading-screen');
   audio.volume = 1.0;
 
-  var playPromise = audio.play();
-  if (playPromise !== undefined) {
-    playPromise.catch(function () {
-      var events = ['touchstart', 'touchend', 'click', 'keydown'];
-      function tryPlay() {
-        audio.play().catch(function(){});
-        events.forEach(function(e) {
-          document.removeEventListener(e, tryPlay);
-        });
-      }
-      events.forEach(function(e) {
-        document.addEventListener(e, tryPlay, { once: true, passive: true });
-      });
-    });
+  // coba autoplay (jalan di laptop)
+  audio.play().catch(function(){});
+
+  // tap loading screen = musik mulai (fix HP)
+  function startAudio() {
+    audio.play().catch(function(){});
   }
+  ls.addEventListener('touchstart', startAudio, { once: true, passive: true });
+  ls.addEventListener('click', startAudio, { once: true });
 
   setTimeout(function () {
-    var ls = document.getElementById('loading-screen');
     ls.classList.add('hide');
     setTimeout(function () { ls.style.display = 'none'; }, 1000);
   }, 3400);
@@ -241,7 +235,7 @@ function nextMsg() { setMsg((currentMsg+1)%messages.length); }
 buildDots();
 setMsg(0);
 
-// ===== GOLD BORDER — hover via CSS, klik via JS =====
+// ===== GOLD BORDER =====
 document.querySelectorAll('.photo-cell').forEach(function(cell) {
   cell.addEventListener('click', function() {
     document.querySelectorAll('.photo-cell').forEach(function(c) {
@@ -308,9 +302,7 @@ function initSpiral(canvasId) {
       len: Math.random() * 120 + 60,
       speed: Math.random() * 8 + 6,
       angle: Math.PI / 5 + Math.random() * 0.3,
-      alpha: 1,
-      life: 0,
-      maxLife: 40
+      alpha: 1, life: 0, maxLife: 40
     };
   }
 
